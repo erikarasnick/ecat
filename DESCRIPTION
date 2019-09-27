@@ -1,6 +1,6 @@
 Package: ecat
 Type: Package
-Title: Calculates Estimates of ECAT Exposure at Point Locations in the Cincinnati, OH Area.
+Title: Calculates Estimates of ECAT Exposure at Point Locations in the Cincinnati, OH Area
 Version: 0.1.0
 Author: Erika Rasnick, Cole Brokamp, Pat Ryan
 Maintainer: Erika Rasnick <erika.rasnick@cchmc.org>

@@ -1,3 +1,6 @@
+#' @importFrom dplyr %>%
+NULL
+
 #' Calculate ECAT exposure estimates at specific locations.
 #'
 #' \code{calculate_ecat()} uses a land use regression model developed by Dr. Patrick Ryan
@@ -23,9 +26,6 @@
 #'
 #' ecat_est <- calculate_ecat(my_data, return.LU.vars = FALSE)
 #' ecat_est <- calculate_ecat(my_data, return.LU.vars = TRUE)
-#'
-#' @
-#'
 #' @export
 
 calculate_ecat <- function(locations, return.LU.vars=FALSE) {
@@ -37,12 +37,13 @@ calculate_ecat <- function(locations, return.LU.vars=FALSE) {
     dplyr::filter(is.na(lat), is.na(lon)) %>%
     dplyr::summarize(n=dplyr::n())
 
-  if (missing$n > 0) {warning(paste0(missing$n, " observations were missing lat/lon coordinates and will be excluded."))}
+  if (missing$n > 0) {warning(paste0(missing$n,
+                                     " observations were missing lat/lon coordinates and will be excluded."))}
 
   locations <- locations %>%
     dplyr::filter(!is.na(lat), !is.na(lon)) %>%
     dplyr::mutate(old_lat = lat, old_lon = lon) %>%
-    st_as_sf(coords=c('lon', 'lat'), crs=4326) %>%
+    sf::st_as_sf(coords=c('lon', 'lat'), crs=4326) %>%
     dplyr::mutate(elevation = get_elevation(.),
            highway.truck.traffic = get_truck_traffic(.,lines.shapefile=highway.lines.sf,buffer.radius=400),
            interstate.truck.traffic = get_truck_traffic(.,lines.shapefile=interstate.lines.sf, buffer.radius=400),
@@ -59,7 +60,7 @@ calculate_ecat <- function(locations, return.LU.vars=FALSE) {
            ecat = 10^log_ecat)
 
   out <- locations %>%
-    st_drop_geometry() %>%
+    sf::st_drop_geometry() %>%
     dplyr::select(id, lat = old_lat, lon = old_lon,
            elevation, highway.truck.traffic,
            interstate.truck.traffic, bus.route.length, ecat)

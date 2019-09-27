@@ -3,3 +3,4 @@
 export(calculate_ecat)
 export(calculate_scaled_ecat)
 export(calculate_scaling_factors)
+importFrom(dplyr,"%>%")

@@ -33,5 +33,4 @@ my_data <- data.frame(id = 1:3,
 
 ecat_est <- calculate_ecat(my_data, return.LU.vars = FALSE)
 ecat_est <- calculate_ecat(my_data, return.LU.vars = TRUE)
-
 }
