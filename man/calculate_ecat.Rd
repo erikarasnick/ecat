@@ -20,12 +20,11 @@ If \code{return.LU.vars = FALSE}, a numeric vector of ECAT estimates (ug/m3)
 }
 \description{
 \code{calculate_ecat()} uses a land use regression model developed by Dr. Patrick Ryan
-    based on ambient air sampling at 24 sites in the metropolitan region of Cincinnati, OH
-    between 2001 and 2005 to estimate exposure to elemental carbon attributable to traffic (ECAT)
-    at point locations specified by latitude and longitude in and around Cincinnati.
-    The model predictors include elevation, truck traffic within 400 meters,
-    and length of bus routes within 100 meters. Returned ECAT values are in micrograms per
-    cubic meter.
+    based on ambient air sampling in Cincinnati, OH between 2001 and 2005 to estimate
+    exposure to elemental carbon attributable to traffic (ECAT) at point locations in
+    the area specified by latitude and longitude. The model predictors include elevation,
+    truck traffic within 400 meters, and length of bus routes within 100 meters. Returned
+    ECAT values are in micrograms per cubic meter.
 }
 \examples{
 my_data <- data.frame(id = 1:3,

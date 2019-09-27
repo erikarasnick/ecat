@@ -3,7 +3,3 @@
 export(calculate_ecat)
 export(calculate_scaled_ecat)
 export(calculate_scaling_factors)
-import(dplyr)
-import(sf)
-importFrom(purrr,map)
-importFrom(purrr,map_dbl)

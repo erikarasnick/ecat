@@ -1,7 +1,3 @@
-#' @import sf
-#' @import dplyr
-NULL
-
 #' Calculate ECAT exposure estimates at specific locations.
 #'
 #' \code{calculate_ecat()} uses a land use regression model developed by Dr. Patrick Ryan
@@ -38,16 +34,16 @@ calculate_ecat <- function(locations, return.LU.vars=FALSE) {
   if(!"lon" %in% colnames(locations)) {stop("locations dataframe must have a column called 'lon'")}
 
   missing <- locations %>%
-    filter(is.na(lat), is.na(lon)) %>%
-    summarize(n=n())
+    dplyr::filter(is.na(lat), is.na(lon)) %>%
+    dplyr::summarize(n=dplyr::n())
 
   if (missing$n > 0) {warning(paste0(missing$n, " observations were missing lat/lon coordinates and will be excluded."))}
 
   locations <- locations %>%
-    filter(!is.na(lat), !is.na(lon)) %>%
-    mutate(old_lat = lat, old_lon = lon) %>%
+    dplyr::filter(!is.na(lat), !is.na(lon)) %>%
+    dplyr::mutate(old_lat = lat, old_lon = lon) %>%
     st_as_sf(coords=c('lon', 'lat'), crs=4326) %>%
-    mutate(elevation = get_elevation(.),
+    dplyr::mutate(elevation = get_elevation(.),
            highway.truck.traffic = get_truck_traffic(.,lines.shapefile=highway.lines.sf,buffer.radius=400),
            interstate.truck.traffic = get_truck_traffic(.,lines.shapefile=interstate.lines.sf, buffer.radius=400),
            bus.route.length = get_line_length(., lines.shapefile=bus.route.lines.sf, buffer.radius=100),
@@ -64,7 +60,7 @@ calculate_ecat <- function(locations, return.LU.vars=FALSE) {
 
   out <- locations %>%
     st_drop_geometry() %>%
-    select(id, lat = old_lat, lon = old_lon,
+    dplyr::select(id, lat = old_lat, lon = old_lon,
            elevation, highway.truck.traffic,
            interstate.truck.traffic, bus.route.length, ecat)
 
@@ -73,6 +69,7 @@ calculate_ecat <- function(locations, return.LU.vars=FALSE) {
   }
 
   return(out)
+  warning("The `raster` package has been attached to the global environment, masking dplyr::select()")
 }
 
 #' Calculate temporal scaling factors based on EPA measurements of EC.
@@ -128,9 +125,9 @@ calculate_scaling_factors <- function(dates, days_prior) {
   denom <- 0.6715289
 
   dates <- tibble::tibble(date = dates) %>%
-    mutate(date_prior = date - lubridate::days(days_prior)) %>%
-    mutate(monthly_mean = purrr::map2_dbl(date, date_prior,
-                                   ~mean(filter(ec_ts, date >= .y, date <= .x)$EC, na.rm=TRUE)),
+    dplyr::mutate(date_prior = date - lubridate::days(days_prior)) %>%
+    dplyr::mutate(monthly_mean = purrr::map2_dbl(date, date_prior,
+                                   ~mean(dplyr::filter(ec_ts, date >= .y, date <= .x)$EC, na.rm=TRUE)),
            scaling_factor = monthly_mean/denom)
 
   return(dates$scaling_factor)
@@ -161,11 +158,11 @@ calculate_scaling_factors <- function(dates, days_prior) {
 
 calculate_scaled_ecat <- function(locations, days_prior) {
   unique_locations <- locations %>%
-    filter(!is.na(lat), !is.na(lon),
+    dplyr::filter(!is.na(lat), !is.na(lon),
            !(duplicated(lat) & duplicated(lon)))
 
   ecat_unadj <- calculate_ecat(unique_locations, return.LU.vars = TRUE)
-  ecat_unadj <- left_join(locations, ecat_unadj, by=c("id", "lat", "lon"))
+  ecat_unadj <- dplyr::left_join(locations, ecat_unadj, by=c("id", "lat", "lon"))
   ecat_unadj <- ecat_unadj$ecat
 
   scaling_factors <- calculate_scaling_factors(dates = locations$date,
@@ -173,4 +170,5 @@ calculate_scaled_ecat <- function(locations, days_prior) {
 
   ecat_adj <- ecat_unadj * scaling_factors
   return(ecat_adj)
+  warning("The `raster` package has been attached to the global environment, masking dplyr::select()")
 }
