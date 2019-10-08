@@ -4,16 +4,13 @@
 \alias{calculate_scaled_ecat}
 \title{Calculate temporally scaled ECAT exposure estimates at specific locations.}
 \usage{
-calculate_scaled_ecat(locations, days_prior)
+calculate_scaled_ecat(locations)
 }
 \arguments{
-\item{locations}{Data.frame with columns 'id', 'lat','lon', and 'date' at minimum.}
-
-\item{days_prior}{The number of days prior to each date to average over. Must
-be an integer.}
+\item{locations}{Data.frame with columns 'id', 'lat','lon', 'start_date', and 'end_date' at minimum.}
 }
 \value{
-a numeric vector of ECAT estimates (ug/m3).
+A numeric vector of ECAT estimates (ug/m3).
 }
 \description{
 \code{calculate_scaled_ecat()} is a wrapper function that estimates ECAT exposures
@@ -26,7 +23,13 @@ a numeric vector of ECAT estimates (ug/m3).
 my_data <- data.frame(id = rep(1,3),
     lat = c(39.19674, 39.19674,	39.19674),
     lon = c(-84.58260, -84.58260, -84.58260),
-    date = c("2010-01-08", "2012-06-08", "2015-04-09"))
+    start_date = c("2010-01-08", "2012-06-08", "2015-04-09"),
+    end_date = c("2010-02-08", "2012-07-08", "2015-05-09"))
 
-ecat_scaled <- calculate_scaled_ecat(my_data, months_prior = 1)
+ecat_scaled <- calculate_scaled_ecat(my_data)
+}
+\references{
+Ryan, P.H., G.K. LeMasters, P. Biswas, L. Levin, S. Hu, M. Lindsey, D.I. Bernstein, J. Lockey, M. Villareal,
+G.K. Khurana Hershey, and S.A. Grinshpun. 2007. "A Comparison of Proximity and Land Use Regression Traffic Exposure Models
+and Wheezing in Infants." Environmental Health Perspectives 115(2): 278-284.  \url{https://doi.org/10.1289/ehp.9480}
 }

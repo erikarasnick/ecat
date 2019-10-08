@@ -4,18 +4,15 @@
 \alias{calculate_scaling_factors}
 \title{Calculate temporal scaling factors based on EPA measurements of EC.}
 \usage{
-calculate_scaling_factors(dates, days_prior)
+calculate_scaling_factors(dates)
 }
 \arguments{
-\item{dates}{Vector of class \code{Date}. See \code{\link{as.Date}} for help converting
+\item{dates}{A data.frame with 2 columns called 'start_date' and 'end_date' at minimum.
+Both columns must be of class \code{Date}. See \code{\link{as.Date}} for help converting
 a character vector to a Date vector.}
-
-\item{days_prior}{The number of days prior to each date to average over. Must
-be an integer.}
 }
 \value{
-A numeric vector of temporal scaling factors the same length
-    as \code{dates}.
+A numeric vector of temporal scaling factors.
 }
 \description{
 \code{calculate_scaling_factors()} constructs temporal scaling factors based on measurements
@@ -29,19 +26,23 @@ A numeric vector of temporal scaling factors the same length
 EPA data in this package is available from November 9, 2001
     through November 28, 2018. Scaling factors that attempt to average over
     EC measured on dates outside this range will not be calculated. In addition,
-    it is important to be mindful of the frequency of EC measurements recorded by the EPA
-    when choosing a value for \code{days_prior}. Note that EC was measured every 6 days
-    through the end of 2010, and every 3 days starting in 2011.
+    it is important to be mindful of the frequency of EC measurements recorded by the EPA.
+    Note that EC was measured every 6 days through the end of 2010, and every 3 days starting in 2011.
+    If there are less than 4 measurements of EC between the start_date and end_date, the scaling
+    factor will not be calculated and NA will be returned.
 }
 \examples{
-my_dates <- c("2010-01-08", "2012-06-08", "2010-01-09", "2015-04-09", "2010-01-10")
+my_dates <- data.frame(start_date = c("2010-01-08", "2012-06-08", "2010-01-09",
+                                      "2015-04-09", "2010-01-10"),
+                       end_date = c("2010-02-08", "2012-07-08", "2010-02-09",
+                                    "2015-05-09", "2010-02-10"))
 
 \dontrun{
-class(my_dates)  # character vector
-scaling1m <- calculate_scaling_factors(my_dates, days_prior = 30)
+class(my_dates$start_date)  # character vector
+scaling1m <- calculate_scaling_factors(my_dates)
 }
 
-my_dates <- as.Date(my_dates)
-class(my_dates)  # Date vector
-scaling1m <- calculate_scaling_factors(my_dates, days_prior = 30)
+my_dates$start_date <- as.Date(my_dates$start_date)
+my_dates$end_date <- as.Date(my_dates$end_date)
+scaling1m <- calculate_scaling_factors(my_dates)
 }

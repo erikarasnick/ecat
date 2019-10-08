@@ -6,6 +6,7 @@ get_elevation <- function(locations) {
     sf::st_transform(sf::st_crs(elevation.raster))
   elevation <- raster::extract(elevation.raster,
                                locations)
+  warning("The `raster` package has been attached to the global environment, masking dplyr::select()")
   return(elevation)
 }
 

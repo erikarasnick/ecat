@@ -34,3 +34,8 @@ my_data <- data.frame(id = 1:3,
 ecat_est <- calculate_ecat(my_data, return.LU.vars = FALSE)
 ecat_est <- calculate_ecat(my_data, return.LU.vars = TRUE)
 }
+\references{
+Ryan, P.H., G.K. LeMasters, P. Biswas, L. Levin, S. Hu, M. Lindsey, D.I. Bernstein, J. Lockey, M. Villareal,
+G.K. Khurana Hershey, and S.A. Grinshpun. 2007. "A Comparison of Proximity and Land Use Regression Traffic Exposure Models
+and Wheezing in Infants." Environmental Health Perspectives 115(2): 278-284.  \url{https://doi.org/10.1289/ehp.9480}
+}
