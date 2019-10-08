@@ -31,9 +31,11 @@ annual average is scaled to monthly averages.
 
 ## Reference
 
-reference some paper of Pat’s about the model… ?
-
-reference the paper discussing the temporal adjustment method… ?
+Ryan, P.H., G.K. LeMasters, P. Biswas, L. Levin, S. Hu, M. Lindsey, D.I.
+Bernstein, J. Lockey, M. Villareal, G.K. Khurana Hershey, and S.A.
+Grinshpun. 2007. “A Comparison of Proximity and Land Use Regression
+Traffic Exposure Models and Wheezing in Infants.” Environmental Health
+Perspectives 115(2): 278-284. <https://doi.org/10.1289/ehp.9480>
 
 ## Installation
 
@@ -62,44 +64,59 @@ d <- tibble::tribble(
     799698L, -84.41395064, 39.18322447
   )
 
-visit_dates <- c("2010-01-08", "2012-06-08", "2010-01-09", "2015-04-09", "2010-01-10")
-visit_dates <- as.Date(visit_dates)
+my_dates <- data.frame(start_date = as.Date(c("2010-01-08", "2012-06-08", "2010-01-09", "2015-04-09", "2010-01-10")),
+                       end_date = as.Date(c("2010-02-08", "2012-07-08", "2010-02-09", "2015-05-09", "2010-02-10")))
 
 d %>% 
   mutate(ecat = calculate_ecat(. , return.LU.vars = FALSE), 
-         date = visit_dates,
-         scaling_factors = calculate_scaling_factors(date, days_prior = 30), 
+         scaling_factors = calculate_scaling_factors(my_dates), 
          scaled_ecat = ecat * scaling_factors)
-#> # A tibble: 5 x 7
-#>       id   lon   lat  ecat date       scaling_factors scaled_ecat
-#>    <int> <dbl> <dbl> <dbl> <date>               <dbl>       <dbl>
-#> 1 809089 -84.7  39.2 0.302 2010-01-08           0.668       0.202
-#> 2 813233 -84.5  39.1 0.740 2012-06-08           1.18        0.876
-#> 3 814881 -84.5  39.3 0.479 2010-01-09           0.708       0.339
-#> 4 799697 -84.4  39.2 0.355 2015-04-09           0.728       0.259
-#> 5 799698 -84.4  39.2 0.339 2010-01-10           0.708       0.240
+#> # A tibble: 5 x 6
+#>       id   lon   lat  ecat scaling_factors scaled_ecat
+#>    <int> <dbl> <dbl> <dbl>           <dbl>       <dbl>
+#> 1 809089 -84.7  39.2 0.302           0.989       0.299
+#> 2 813233 -84.5  39.1 0.740           1.05        0.779
+#> 3 814881 -84.5  39.3 0.479           0.945       0.452
+#> 4 799697 -84.4  39.2 0.355           1.09        0.388
+#> 5 799698 -84.4  39.2 0.339           0.945       0.320
 ```
 
 ### Example 2: Using the `calculate_scaled_ecat()` wrapper function to automatically apply scaling factors to ECAT estimates.
+
+A common use case is calculating monthly exposures. For example, the
+data below represents a common structure. There are 2 unique ids, and
+the locations remain constant while the dates increase by one month.
 
 ``` r
 d <- tibble::tribble(
   ~id,         ~lon,        ~lat,        ~date,
     809089L, -84.69127387, 39.24710734, as.Date("2010-01-08"),
-    809089L, -84.69127387, 39.24710734, as.Date("2012-06-08"),
-    809089L, -84.69127387, 39.24710734, as.Date("2015-04-09"),
+    809089L, -84.69127387, 39.24710734, as.Date("2010-02-08"),
+    809089L, -84.69127387, 39.24710734, as.Date("2010-03-08"),
     799697L, -84.41741798, 39.18541228, as.Date("2010-01-10"),
-    799697L, -84.41741798, 39.18541228, as.Date("2012-12-03")
+    799697L, -84.41741798, 39.18541228, as.Date("2012-02-10")
   )
+```
 
+We want to scale the ecat exposures between these dates, but we need
+`start_date` and `end_date` columns.
+
+``` r
+d <- d %>% 
+  rename(start_date = date) %>% 
+  group_by(id) %>% 
+  mutate(end_date = lead(start_date)) %>% 
+  filter(!is.na(end_date)) %>% 
+  ungroup()
+```
+
+``` r
 d %>% 
-  mutate(scaled_ecat = calculate_scaled_ecat(., days_prior = 30))
-#> # A tibble: 5 x 5
-#>       id   lon   lat date       scaled_ecat
-#>    <int> <dbl> <dbl> <date>           <dbl>
-#> 1 809089 -84.7  39.2 2010-01-08       0.202
-#> 2 809089 -84.7  39.2 2012-06-08       0.358
-#> 3 809089 -84.7  39.2 2015-04-09       0.220
-#> 4 799697 -84.4  39.2 2010-01-10       0.251
-#> 5 799697 -84.4  39.2 2012-12-03       0.530
+  mutate(scaled_ecat = calculate_scaled_ecat(.))
+#> # A tibble: 3 x 6
+#>       id   lon   lat start_date end_date   scaled_ecat
+#>    <int> <dbl> <dbl> <date>     <date>           <dbl>
+#> 1 809089 -84.7  39.2 2010-01-08 2010-02-08       0.299
+#> 2 809089 -84.7  39.2 2010-02-08 2010-03-08       0.264
+#> 3 799697 -84.4  39.2 2010-01-10 2012-02-10       0.370
 ```
