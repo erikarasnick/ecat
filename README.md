@@ -11,8 +11,6 @@ by Dr. Patrick Ryan based on ambient air sampling in Cincinnati, OH
 between 2001 and 2005. The model predictors include elevation, truck
 traffic within 400 meters, and length of bus routes within 100 meters.
 
-map?
-
 Additionally, these ECAT exposures can be adjusted to account for the
 temporal variation associated with changing ECAT levels in the area over
 time. Scaling factors are constructed using measurements of elemental
