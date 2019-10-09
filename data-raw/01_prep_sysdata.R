@@ -1,5 +1,3 @@
-# setwd("/Users/RASV5G/OneDrive - cchmc/temporal_ecat/ecat_est_new")
-
 elevation.raster <- readRDS('elevation_raster.rds')
 interstate.lines.sf <- readRDS('interstate_lines_sf.rds')
 highway.lines.sf <- readRDS('highway_lines_sf.rds')
