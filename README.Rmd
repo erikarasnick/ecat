@@ -91,25 +91,33 @@ d %>%
 
 ### Example 2: Using the `calculate_scaled_ecat()` wrapper function to automatically apply scaling factors to ECAT estimates.
 
-A common use case is calculating monthly exposures.  For example, the data below represents a common structure.  There are 2 unique ids, and the locations remain constant while the dates increase by one month. 
+A common use case is calculating monthly exposures.  For example, we may have a pair of coordinates recorded annually for each participant.  In the data below, we have 2 unique ids, with lat/lon recorded once per year.
 
 ```{r}
 d <- tibble::tribble(
   ~id,         ~lon,        ~lat,        ~date,
     809089L, -84.69127387, 39.24710734, as.Date("2010-01-08"),
-    809089L, -84.69127387, 39.24710734, as.Date("2010-02-08"),
-    809089L, -84.69127387, 39.24710734, as.Date("2010-03-08"),
-    799697L, -84.41741798, 39.18541228, as.Date("2010-01-10"),
+    809089L, -84.69127387, 39.24710734, as.Date("2011-01-08"),
+    809089L, -84.69127387, 39.24710734, as.Date("2012-01-08"),
+    799697L, -84.41741798, 39.18541228, as.Date("2011-01-10"),
     799697L, -84.41741798, 39.18541228, as.Date("2012-02-10")
   )
 ```
 
-We want to scale the ecat exposures between these dates, but we need `start_date` and `end_date` columns.
+We want to scale the ecat measurements to monthly exposures between these dates, but we need `start_date` and `end_date` columns that represent the monthy time periods we want to average over.
 
 ```{r}
 d <- d %>% 
-  rename(start_date = date) %>% 
-  group_by(id) %>% 
+  mutate(from = date,
+         to = from + lubridate::years(1)) %>% 
+  group_by(id, date) %>% 
+  nest() %>% 
+  mutate(dates = map(data, ~seq.Date(from = .x$from, 
+                                     to = .x$to, 
+                                     by = 'month'))) %>% 
+  unnest(cols=c('data', 'dates')) %>% 
+  dplyr::select(-from, -to) %>% 
+  rename(start_date = dates) %>% 
   mutate(end_date = lead(start_date)) %>% 
   filter(!is.na(end_date)) %>% 
   ungroup()

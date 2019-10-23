@@ -81,28 +81,38 @@ d %>%
 
 ### Example 2: Using the `calculate_scaled_ecat()` wrapper function to automatically apply scaling factors to ECAT estimates.
 
-A common use case is calculating monthly exposures. For example, the
-data below represents a common structure. There are 2 unique ids, and
-the locations remain constant while the dates increase by one month.
+A common use case is calculating monthly exposures. For example, we may
+have a pair of coordinates recorded annually for each participant. In
+the data below, we have 2 unique ids, with lat/lon recorded once per
+year.
 
 ``` r
 d <- tibble::tribble(
   ~id,         ~lon,        ~lat,        ~date,
     809089L, -84.69127387, 39.24710734, as.Date("2010-01-08"),
-    809089L, -84.69127387, 39.24710734, as.Date("2010-02-08"),
-    809089L, -84.69127387, 39.24710734, as.Date("2010-03-08"),
-    799697L, -84.41741798, 39.18541228, as.Date("2010-01-10"),
+    809089L, -84.69127387, 39.24710734, as.Date("2011-01-08"),
+    809089L, -84.69127387, 39.24710734, as.Date("2012-01-08"),
+    799697L, -84.41741798, 39.18541228, as.Date("2011-01-10"),
     799697L, -84.41741798, 39.18541228, as.Date("2012-02-10")
   )
 ```
 
-We want to scale the ecat exposures between these dates, but we need
-`start_date` and `end_date` columns.
+We want to scale the ecat measurements to monthly exposures between
+these dates, but we need `start_date` and `end_date` columns that
+represent the monthy time periods we want to average over.
 
 ``` r
 d <- d %>% 
-  rename(start_date = date) %>% 
-  group_by(id) %>% 
+  mutate(from = date,
+         to = from + lubridate::years(1)) %>% 
+  group_by(id, date) %>% 
+  nest() %>% 
+  mutate(dates = map(data, ~seq.Date(from = .x$from, 
+                                     to = .x$to, 
+                                     by = 'month'))) %>% 
+  unnest(cols=c('data', 'dates')) %>% 
+  dplyr::select(-from, -to) %>% 
+  rename(start_date = dates) %>% 
   mutate(end_date = lead(start_date)) %>% 
   filter(!is.na(end_date)) %>% 
   ungroup()
@@ -111,10 +121,18 @@ d <- d %>%
 ``` r
 d %>% 
   mutate(scaled_ecat = calculate_scaled_ecat(.))
-#> # A tibble: 3 x 6
-#>       id   lon   lat start_date end_date   scaled_ecat
-#>    <int> <dbl> <dbl> <date>     <date>           <dbl>
-#> 1 809089 -84.7  39.2 2010-01-08 2010-02-08       0.299
-#> 2 809089 -84.7  39.2 2010-02-08 2010-03-08       0.264
-#> 3 799697 -84.4  39.2 2010-01-10 2012-02-10       0.370
+#> # A tibble: 60 x 7
+#>        id date         lon   lat start_date end_date   scaled_ecat
+#>     <int> <date>     <dbl> <dbl> <date>     <date>           <dbl>
+#>  1 809089 2010-01-08 -84.7  39.2 2010-01-08 2010-02-08       0.299
+#>  2 809089 2010-01-08 -84.7  39.2 2010-02-08 2010-03-08       0.264
+#>  3 809089 2010-01-08 -84.7  39.2 2010-03-08 2010-04-08       0.332
+#>  4 809089 2010-01-08 -84.7  39.2 2010-04-08 2010-05-08       0.210
+#>  5 809089 2010-01-08 -84.7  39.2 2010-05-08 2010-06-08       0.305
+#>  6 809089 2010-01-08 -84.7  39.2 2010-06-08 2010-07-08       0.356
+#>  7 809089 2010-01-08 -84.7  39.2 2010-07-08 2010-08-08       0.338
+#>  8 809089 2010-01-08 -84.7  39.2 2010-08-08 2010-09-08       0.390
+#>  9 809089 2010-01-08 -84.7  39.2 2010-09-08 2010-10-08       0.362
+#> 10 809089 2010-01-08 -84.7  39.2 2010-10-08 2010-11-08       0.466
+#> # … with 50 more rows
 ```
