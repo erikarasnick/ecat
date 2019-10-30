@@ -18,3 +18,7 @@ ecat is hosted on GitHub; install with:
 
 `remotes::install_github('erikarasnick/ecat')`
 
+## Examples
+
+See our [vignette](https://erikarasnick.github.io/ecat/articles/ecat_examples.html) for example usage.
+
