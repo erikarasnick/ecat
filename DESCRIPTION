@@ -2,16 +2,21 @@ Package: ecat
 Type: Package
 Title: Calculates Estimates of ECAT Exposure at Point Locations in the Cincinnati, OH Area
 Version: 0.1.0
-Author: Erika Rasnick, Cole Brokamp, Pat Ryan
+Authors@R: c(
+            person("Erika", "Rasnick", email = "erika.rasnick@cchmc.org",
+                  role = c("aut", "cre")),
+            person("Cole", "Brokamp", role="aut"),
+            person("Pat", "Ryan", role="aut"))
 Maintainer: Erika Rasnick <erika.rasnick@cchmc.org>
 Description: Easily and reproducibly assess exposure to elemental carbon attributable to traffic (ECAT)
     at specific locations in and around Cincinnati, Ohio. The package calculates predictions of ECAT 
     exposure from a land use regression model developed by Dr. Patrick Ryan based on ambient air sampling 
     in Cincinnati, OH between 2001 and 2005. Additionally scale estimates to account for temporal variation
     in ECAT in the region.
-License: What license is it under?
 Encoding: UTF-8
 LazyData: true
+URL: https://github.com/erikarasnick/ecat
+BugReports: https://github.com/erikarasnick/ecat/issues
 Imports: 
     sf (>= 0.7.4),
     raster (>= 2.9.5),

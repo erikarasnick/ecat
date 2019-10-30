@@ -1,5 +1,5 @@
 ---
-title: "ecat Package Example Usage"
+title: "Example Usage"
 author: Erika Rasnick
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette

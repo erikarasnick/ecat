@@ -6,7 +6,7 @@ Additionally, these ECAT exposures can be adjusted to account for the temporal v
 
 The figure below demonstrates the increased variability when an estimate of ECAT at one location is used as an annual average versus when that annual average is scaled to monthly averages.
 
-![](figs/temporal_variability.png)
+![](man/figures/temporal_variability.png)
 
 ## Reference
 
