@@ -153,7 +153,7 @@ calculate_scaling_factors <- function(dates) {
 
 #' Calculate temporally scaled ECAT exposure estimates at specific locations.
 #'
-#' \code{calculate_scaled_ecat()} is a wrapper function that estimates ECAT exposures
+#' \code{add_scaled_ecat()} is a wrapper function that estimates ECAT exposures
 #'     at provided locations by calling \code{calculate_ecat()}, then temporally scales those
 #'     estimates using scaling factors computed by calling \code{calculate_scaling_factors()}.
 #'     This function is particularly useful for calculating exposures at the same locations on
@@ -171,13 +171,13 @@ calculate_scaling_factors <- function(dates) {
 #' my_data <- data.frame(id = rep(1,3),
 #'     lat = c(39.19674, 39.19674,	39.19674),
 #'     lon = c(-84.58260, -84.58260, -84.58260),
-#'     start_date = c("2010-01-08", "2012-06-08", "2015-04-09"),
-#'     end_date = c("2010-02-08", "2012-07-08", "2015-05-09"))
+#'     start_date = as.Date(c("2010-01-08", "2012-06-08", "2015-04-09")),
+#'     end_date = as.Date(c("2010-02-08", "2012-07-08", "2015-05-09")))
 #'
-#' ecat_scaled <- calculate_scaled_ecat(my_data)
+#' ecat_scaled <- add_scaled_ecat(my_data)
 #' @export
 
-calculate_scaled_ecat <- function(locations) {
+add_scaled_ecat <- function(locations) {
   unique_locations <- locations %>%
     dplyr::filter(!(duplicated(lat) & duplicated(lon)))
 
