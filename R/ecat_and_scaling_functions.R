@@ -37,6 +37,8 @@ calculate_ecat <- function(locations, return.LU.vars=FALSE) {
   if(!"lat" %in% colnames(locations)) {stop("locations dataframe must have a column called 'lat'")}
   if(!"lon" %in% colnames(locations)) {stop("locations dataframe must have a column called 'lon'")}
 
+  orig <- locations
+
   missing <- locations %>%
     dplyr::filter(is.na(lat), is.na(lon))
 
@@ -67,6 +69,8 @@ calculate_ecat <- function(locations, return.LU.vars=FALSE) {
     dplyr::select(id, lat = old_lat, lon = old_lon,
            elevation, highway.truck.traffic,
            interstate.truck.traffic, bus.route.length, ecat)
+
+  out <- dplyr::left_join(orig, out, by = c('id', 'lat', 'lon'))
 
   if (return.LU.vars == FALSE) {
     out <- out$ecat
