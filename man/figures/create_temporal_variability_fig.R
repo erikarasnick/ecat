@@ -18,4 +18,4 @@ d %>%
   theme_bw() +
   labs(y = "ECAT (ug/m3)", color="") +
   theme(axis.title.x = element_blank())
-ggsave("figs/temporal_variability.png", height=3, width=5)
+ggsave("man/figures/temporal_variability.png", height=3, width=5)
