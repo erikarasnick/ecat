@@ -47,6 +47,7 @@ calculate_ecat <- function(locations, return.LU.vars=FALSE) {
 
   locations <- locations %>%
     dplyr::filter(!is.na(lat), !is.na(lon)) %>%
+    dplyr::filter(!(duplicated(lat) & duplicated(lon))) %>%
     dplyr::mutate(old_lat = lat, old_lon = lon) %>%
     sf::st_as_sf(coords=c('lon', 'lat'), crs=4326) %>%
     dplyr::mutate(elevation = get_elevation(.),
@@ -182,15 +183,11 @@ calculate_scaling_factors <- function(dates) {
 #' @export
 
 add_scaled_ecat <- function(locations) {
-  unique_locations <- locations %>%
-    dplyr::filter(!(duplicated(lat) & duplicated(lon)))
-
-  ecat_unadj <- calculate_ecat(unique_locations, return.LU.vars = TRUE)
-  ecat_unadj <- dplyr::left_join(locations, ecat_unadj, by=c("id", "lat", "lon"))
+  ecat_unadj <- calculate_ecat(locations, return.LU.vars = FALSE)
 
   scaling_factors <- calculate_scaling_factors(dates = locations)
 
-  ecat_adj <- ecat_unadj$ecat * scaling_factors
+  ecat_adj <- ecat_unadj * scaling_factors
 
   return(ecat_adj)
 }
