@@ -74,7 +74,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ecat</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.3</span>
       </span>
     </div>
 
@@ -169,7 +169,7 @@ and Wheezing in Infants." Environmental Health Perspectives 115(2): 278-284.  <a
     <span class='kw'>lat</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>39.19674</span>, <span class='fl'>39.12731</span>, <span class='fl'>39.28765</span>),
     <span class='kw'>lon</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>84.58260</span>, -<span class='fl'>84.52700</span>, -<span class='fl'>84.51017</span>))
 
-<span class='no'>ecat_est</span> <span class='kw'>&lt;-</span> <span class='fu'>calculate_ecat</span>(<span class='no'>my_data</span>, <span class='kw'>return.LU.vars</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: The `raster` package has been attached to the global environment, masking dplyr::select()</span></div><div class='input'><span class='no'>ecat_est</span> <span class='kw'>&lt;-</span> <span class='fu'>calculate_ecat</span>(<span class='no'>my_data</span>, <span class='kw'>return.LU.vars</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: The `raster` package has been attached to the global environment, masking dplyr::select()</span></div></pre>
+<span class='no'>ecat_est</span> <span class='kw'>&lt;-</span> <span class='fu'>calculate_ecat</span>(<span class='no'>my_data</span>, <span class='kw'>return.LU.vars</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: The `raster` package has been attached to the global environment, masking dplyr::select()</span></div><div class='output co'>#&gt; <span class='error'>Error in dplyr::left_join(d, out, by = c("id", "lat", "lon")): object 'd' not found</span></div><div class='input'><span class='no'>ecat_est</span> <span class='kw'>&lt;-</span> <span class='fu'>calculate_ecat</span>(<span class='no'>my_data</span>, <span class='kw'>return.LU.vars</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: The `raster` package has been attached to the global environment, masking dplyr::select()</span></div><div class='output co'>#&gt; <span class='error'>Error in dplyr::left_join(d, out, by = c("id", "lat", "lon")): object 'd' not found</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
