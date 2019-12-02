@@ -71,7 +71,7 @@ calculate_ecat <- function(locations, return.LU.vars=FALSE) {
            elevation, highway.truck.traffic,
            interstate.truck.traffic, bus.route.length, ecat)
 
-  out <- dplyr::left_join(d, out, by = c('id', 'lat', 'lon'))
+  out <- dplyr::left_join(orig, out, by = c('id', 'lat', 'lon'))
 
   if (return.LU.vars == FALSE) {
     out <- out$ecat
