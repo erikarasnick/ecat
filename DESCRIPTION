@@ -1,7 +1,7 @@
 Package: ecat
 Type: Package
 Title: Calculate Estimates of ECAT Exposure at Point Locations in the Cincinnati, OH Area
-Version: 0.9.4
+Version: 0.9.5
 License: GPL-3
 Authors@R: c(
             person("Erika", "Rasnick", email = "erika.rasnick@cchmc.org",

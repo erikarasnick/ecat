@@ -47,7 +47,7 @@ calculate_ecat <- function(locations, return.LU.vars=FALSE) {
 
   locations <- locations %>%
     dplyr::filter(!is.na(lat), !is.na(lon)) %>%
-    dplyr::filter(!(duplicated(id) & duplicated(lat) & duplicated(lon))) %>%
+    dplyr::filter(!(duplicated(lat) & duplicated(lon))) %>%
     dplyr::mutate(old_lat = lat, old_lon = lon) %>%
     sf::st_as_sf(coords=c('lon', 'lat'), crs=4326) %>%
     dplyr::mutate(elevation = get_elevation(.),
@@ -71,7 +71,7 @@ calculate_ecat <- function(locations, return.LU.vars=FALSE) {
            elevation, highway.truck.traffic,
            interstate.truck.traffic, bus.route.length, ecat)
 
-  out <- dplyr::left_join(orig, out, by = c('id', 'lat', 'lon'))
+  out <- dplyr::left_join(orig, out, by = c('lat', 'lon'))
 
   if (return.LU.vars == FALSE) {
     out <- out$ecat
