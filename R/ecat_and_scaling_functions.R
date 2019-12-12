@@ -36,6 +36,7 @@ calculate_ecat <- function(locations, return.LU.vars=FALSE) {
   if(!"id" %in% colnames(locations)) {stop("locations dataframe must have a column called 'id'")}
   if(!"lat" %in% colnames(locations)) {stop("locations dataframe must have a column called 'lat'")}
   if(!"lon" %in% colnames(locations)) {stop("locations dataframe must have a column called 'lon'")}
+  if(!"ecat" %in% colnames(locations)) {stop("locations dataframe must not already have a column called 'ecat'")}
 
   orig <- locations
 
