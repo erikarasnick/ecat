@@ -22,5 +22,5 @@ remotes::install_github('erikarasnick/ecat')
 
 ## Examples
 
-See our [vignette](https://erikarasnick.github.io/ecat/articles/ecat_examples.html) for example usage.
+See our [vignette](https://geomarker-io.github.io/ecat/articles/ecat_examples.html) for example usage.
 
