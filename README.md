@@ -17,7 +17,7 @@ Ryan, P.H., G.K. LeMasters, P. Biswas, L. Levin, S. Hu, M. Lindsey, D.I. Bernste
 ecat is hosted on GitHub; install with:
 
 ```
-remotes::install_github('erikarasnick/ecat')
+remotes::install_github('geomarker-io/ecat')
 ```
 
 ## Examples

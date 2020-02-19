@@ -38,9 +38,9 @@ my_dates <- data.frame(start_date = as.Date(c("2010-01-08", "2012-06-08", "2010-
                        end_date = as.Date(c("2010-02-08", "2012-07-08", "2010-02-09", "2015-05-09", "2010-02-10")))
 
 d %>% 
-  mutate(ecat = calculate_ecat(. , return.LU.vars = FALSE), 
+  mutate(unscaled_ecat = calculate_ecat(. , return.LU.vars = FALSE), 
          scaling_factors = calculate_scaling_factors(my_dates), 
-         scaled_ecat = ecat * scaling_factors)
+         scaled_ecat = unscaled_ecat * scaling_factors)
 ```
 
 ### Example 2: Using the `add_scaled_ecat()` wrapper function to automatically apply scaling factors to ECAT estimates.
