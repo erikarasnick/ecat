@@ -16,8 +16,8 @@ Description: Easily and reproducibly assess exposure to elemental carbon attribu
     in ECAT in the region.
 Encoding: UTF-8
 LazyData: true
-URL: https://github.com/erikarasnick/ecat
-BugReports: https://github.com/erikarasnick/ecat/issues
+URL: https://github.com/geomarker-io/ecat
+BugReports: https://github.com/geomarker-io/ecat/issues
 Imports: 
     sf (>= 0.7.4),
     raster (>= 2.9.5),
