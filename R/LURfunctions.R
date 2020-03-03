@@ -1,4 +1,5 @@
 #' @importFrom dplyr %>%
+#' @importFrom rlang .data
 NULL
 
 get_elevation <- function(locations) {
@@ -13,7 +14,7 @@ get_elevation <- function(locations) {
 get_truck_traffic <- function(locations, lines.shapefile, buffer.radius=400) {
   locations <- locations %>%
     sf::st_transform(sf::st_crs(lines.shapefile)) %>%
-    dplyr::group_by(id, old_lat, old_lon) %>%
+    dplyr::group_by(.data$id, .data$old_lat, .data$old_lon) %>%
     tidyr::nest()
   buffer <- purrr::map(locations$data, ~sf::st_buffer(.x, dist=buffer.radius/0.3048006096, nQuadSegs=1000))
   suppressWarnings(intersect <- purrr::map(buffer, ~sf::st_intersection(.x, lines.shapefile)))
@@ -25,7 +26,7 @@ get_truck_traffic <- function(locations, lines.shapefile, buffer.radius=400) {
 get_line_length <- function(locations,lines.shapefile,buffer.radius=100) {
   locations <- locations %>%
     sf::st_transform(sf::st_crs(lines.shapefile)) %>%
-    dplyr::group_by(id, old_lat, old_lon) %>%
+    dplyr::group_by(.data$id, .data$old_lat, .data$old_lon) %>%
     tidyr::nest()
   buffer <- purrr::map(locations$data, ~sf::st_buffer(.x, dist=buffer.radius/0.3048006096, nQuadSegs=1000))
   suppressWarnings(crop.buffer <- purrr::map(buffer, ~sf::st_intersection(.x, lines.shapefile)))

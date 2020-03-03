@@ -1,4 +1,5 @@
 #' @importFrom dplyr %>%
+#' @importFrom rlang .data
 NULL
 
 #' Calculate ECAT exposure estimates at specific locations.
@@ -41,36 +42,36 @@ calculate_ecat <- function(locations, return.LU.vars=FALSE) {
   orig <- locations
 
   missing <- locations %>%
-    dplyr::filter(is.na(lat), is.na(lon))
+    dplyr::filter(is.na(.data$lat), is.na(.data$lon))
 
   if (nrow(missing) > 0) {warning(paste0(missing$n,
                                      " observations were missing lat/lon coordinates and will be excluded."))}
 
   locations <- locations %>%
-    dplyr::filter(!is.na(lat), !is.na(lon)) %>%
-    dplyr::filter(!(duplicated(lat) & duplicated(lon))) %>%
-    dplyr::mutate(old_lat = lat, old_lon = lon) %>%
+    dplyr::filter(!is.na(.data$lat), !is.na(.data$lon)) %>%
+    dplyr::filter(!(duplicated(.data$lat) & duplicated(.data$lon))) %>%
+    dplyr::mutate(old_lat = .data$lat, old_lon = .data$lon) %>%
     sf::st_as_sf(coords=c('lon', 'lat'), crs=4326) %>%
-    dplyr::mutate(elevation = get_elevation(.),
-           highway.truck.traffic = get_truck_traffic(.,lines.shapefile=highway.lines.sf,buffer.radius=400),
-           interstate.truck.traffic = get_truck_traffic(.,lines.shapefile=interstate.lines.sf, buffer.radius=400),
-           bus.route.length = get_line_length(., lines.shapefile=bus.route.lines.sf, buffer.radius=100),
-           truck400 = interstate.truck.traffic + highway.truck.traffic,
-           elevatnew = elevation / 1000,
-           br_km = bus.route.length / 1000,
-           br_km = ifelse(br_km == 0, 0.01, br_km),
-           logbr = log10(br_km),
-           truck400s = truck400 / 1000,
-           truck400s = ifelse(truck400s == 0, 0.01, truck400s),
-           logtruck = log10(truck400s),
-           log_ecat = .34408 - (.85107 * elevatnew) + (.04448 * logbr) + (.03968 * logtruck),
-           ecat = 10^log_ecat)
+    dplyr::mutate(elevation = get_elevation(.data$.),
+           highway.truck.traffic = get_truck_traffic(.data$.,lines.shapefile=highway.lines.sf,buffer.radius=400),
+           interstate.truck.traffic = get_truck_traffic(.data$.,lines.shapefile=interstate.lines.sf, buffer.radius=400),
+           bus.route.length = get_line_length(.data$., lines.shapefile=bus.route.lines.sf, buffer.radius=100),
+           truck400 = .data$interstate.truck.traffic + .data$highway.truck.traffic,
+           elevatnew = .data$elevation / 1000,
+           br_km = .data$bus.route.length / 1000,
+           br_km = ifelse(.data$br_km == 0, 0.01, .data$br_km),
+           logbr = log10(.data$br_km),
+           truck400s = .data$truck400 / 1000,
+           truck400s = ifelse(.data$truck400s == 0, 0.01, .data$truck400s),
+           logtruck = log10(.data$truck400s),
+           log_ecat = .34408 - (.85107 * .data$elevatnew) + (.04448 * .data$logbr) + (.03968 * .data$logtruck),
+           ecat = 10^.data$log_ecat)
 
   out <- locations %>%
     sf::st_drop_geometry() %>%
-    dplyr::select(id, lat = old_lat, lon = old_lon,
-           elevation, highway.truck.traffic,
-           interstate.truck.traffic, bus.route.length, ecat)
+    dplyr::select(.data$id, lat = .data$old_lat, lon = .data$old_lon,
+                  .data$elevation, .data$highway.truck.traffic,
+                  .data$interstate.truck.traffic, .data$bus.route.length, .data$ecat)
 
   out <- dplyr::left_join(orig, out, by = c('lat', 'lon'))
 
@@ -144,15 +145,15 @@ calculate_scaling_factors <- function(dates) {
   denom <- 0.6715289
 
   dates <- dates %>%
-    dplyr::mutate(monthly_mean = purrr::map2_dbl(start_date, end_date,
+    dplyr::mutate(monthly_mean = purrr::map2_dbl(.data$start_date, .data$end_date,
                                                  ~{ecats <- dplyr::filter(ec_ts, date >= .x, date <= .y)$EC
                                                  if (length(ecats) < 4) warning("Less than 4 measurements recorded between start and end dates. Returning NA. Consider increasing date range.",
                                                                               call. = FALSE)
                                                  ifelse(length(ecats) < 4, NA, mean(ecats, na.rm=TRUE))
                                    }),
-           scaling_factor = ifelse(start_date < min(ec_ts$date) | end_date > max(ec_ts$date),
-                                   NA, monthly_mean/denom)) %>%
-    dplyr::select(-monthly_mean)
+           scaling_factor = ifelse(.data$start_date < min(ec_ts$date) | .data$end_date > max(ec_ts$date),
+                                   NA, .data$monthly_mean/denom)) %>%
+    dplyr::select(-.data$monthly_mean)
 
   return(dates$scaling_factor)
 }
