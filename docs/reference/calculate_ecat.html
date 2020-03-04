@@ -154,10 +154,12 @@ to generate the ECAT values are also returned.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>If <code>return.LU.vars = FALSE</code>, a numeric vector of ECAT estimates (ug/m3)
-    is returned. If <code>return.LU.vars = TRUE</code>, the <code>locations</code> data.frame with
-    additional columns for ECAT values and the land use predictors used
-    to generate the ECAT values is returned.</p>
+    <p>If `return.LU.vars` = `FALSE`, a numeric vector of ECAT estimates (ug/m3) is returned.
+If `return.LU.vars` = `TRUE`, the `locations`` data.frame with additional columns for E
+CAT values and the land use predictors used to generate the ECAT values is returned.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>ECAT will be missing if point is outside the 7-county area (OH: Hamilton, Butler, Warren, Clermont; KY: Campbell, Kenton, Boone)</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Ryan, P.H., G.K. LeMasters, P. Biswas, L. Levin, S. Hu, M. Lindsey, D.I. Bernstein, J. Lockey, M. Villareal,
@@ -176,6 +178,7 @@ and Wheezing in Infants." Environmental Health Perspectives 115(2): 278-284.  <a
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       <li><a href="#value">Value</a></li>
+      <li><a href="#details">Details</a></li>
       <li><a href="#references">References</a></li>
       <li><a href="#examples">Examples</a></li>
     </ul>

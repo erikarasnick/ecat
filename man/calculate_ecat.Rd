@@ -13,10 +13,9 @@ calculate_ecat(locations, return.LU.vars = FALSE)
 to generate the ECAT values are also returned.}
 }
 \value{
-If \code{return.LU.vars = FALSE}, a numeric vector of ECAT estimates (ug/m3)
-    is returned. If \code{return.LU.vars = TRUE}, the \code{locations} data.frame with
-    additional columns for ECAT values and the land use predictors used
-    to generate the ECAT values is returned.
+If `return.LU.vars` = `FALSE`, a numeric vector of ECAT estimates (ug/m3) is returned.
+If `return.LU.vars` = `TRUE`, the `locations`` data.frame with additional columns for E
+CAT values and the land use predictors used to generate the ECAT values is returned.
 }
 \description{
 \code{calculate_ecat()} uses a land use regression model developed by Dr. Patrick Ryan
@@ -25,6 +24,9 @@ If \code{return.LU.vars = FALSE}, a numeric vector of ECAT estimates (ug/m3)
     the area specified by latitude and longitude. The model predictors include elevation,
     truck traffic within 400 meters, and length of bus routes within 100 meters. Returned
     ECAT values are in micrograms per cubic meter.
+}
+\details{
+ECAT will be missing if point is outside the 7-county area (OH: Hamilton, Butler, Warren, Clermont; KY: Campbell, Kenton, Boone)
 }
 \examples{
 my_data <- data.frame(id = 1:3,
