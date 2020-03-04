@@ -11,7 +11,11 @@
 #' @param return.LU.vars When \code{return.LU.vars = TRUE}, the land use predictors used
 #'     to generate the ECAT values are also returned.
 #'
-#' @return ECAT will be missing if point is outside the 7-county area (OH: Hamilton, Butler, Warren, Clermont; KY: Campbell, Kenton, Boone)
+#' @return If `return.LU.vars` = `FALSE`, a numeric vector of ECAT estimates (ug/m3) is returned.
+#' If `return.LU.vars` = `TRUE`, the `locations`` data.frame with additional columns for E
+#' CAT values and the land use predictors used to generate the ECAT values is returned.
+#'
+#' @details ECAT will be missing if point is outside the 7-county area (OH: Hamilton, Butler, Warren, Clermont; KY: Campbell, Kenton, Boone)
 #'
 #' @references Ryan, P.H., G.K. LeMasters, P. Biswas, L. Levin, S. Hu, M. Lindsey, D.I. Bernstein, J. Lockey, M. Villareal,
 #' G.K. Khurana Hershey, and S.A. Grinshpun. 2007. "A Comparison of Proximity and Land Use Regression Traffic Exposure Models
