@@ -5,9 +5,9 @@ ec_ts <- readRDS("./data-raw/ec_ts.rds")
 
 # elevation.raster <- readRDS('./data-raw/elevation_raster.rds')
 # grid <- sf::st_read('./data-raw/prediction_grid_1km/prediction_grid_1km.shp')
-# e_crop <- raster::crop(e, raster::extent(grid)) %>%
-#   raster::mask(grid)
-# saveRDS(e_crop, "elevation_raster_trimmed.rds")
+#e_crop <- raster::crop(elevation.raster, raster::extent(grid)) %>%
+#  raster::mask(grid)
+# saveRDS(e_crop, "./data-raw/elevation_raster_trimmed.rds")
 
 elevation.raster <- readRDS('./data-raw/elevation_raster_trimmed.rds')
 
