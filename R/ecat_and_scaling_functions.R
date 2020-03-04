@@ -1,7 +1,3 @@
-#' @importFrom dplyr %>%
-#' @importFrom rlang .data
-NULL
-
 #' Calculate ECAT exposure estimates at specific locations.
 #'
 #' \code{calculate_ecat()} uses a land use regression model developed by Dr. Patrick Ryan
@@ -15,10 +11,7 @@ NULL
 #' @param return.LU.vars When \code{return.LU.vars = TRUE}, the land use predictors used
 #'     to generate the ECAT values are also returned.
 #'
-#' @return If \code{return.LU.vars = FALSE}, a numeric vector of ECAT estimates (ug/m3)
-#'     is returned. If \code{return.LU.vars = TRUE}, the \code{locations} data.frame with
-#'     additional columns for ECAT values and the land use predictors used
-#'     to generate the ECAT values is returned.
+#' @return ECAT will be missing if point is outside the 7-county area (OH: Hamilton, Butler, Warren, Clermont; KY: Campbell, Kenton, Boone)
 #'
 #' @references Ryan, P.H., G.K. LeMasters, P. Biswas, L. Levin, S. Hu, M. Lindsey, D.I. Bernstein, J. Lockey, M. Villareal,
 #' G.K. Khurana Hershey, and S.A. Grinshpun. 2007. "A Comparison of Proximity and Land Use Regression Traffic Exposure Models
@@ -41,37 +34,35 @@ calculate_ecat <- function(locations, return.LU.vars=FALSE) {
 
   orig <- locations
 
-  missing <- locations %>%
-    dplyr::filter(is.na(.data$lat), is.na(.data$lon))
+  missing <- locations[is.na(locations$lat) | is.na(locations$lon) ,]
 
   if (nrow(missing) > 0) {warning(paste0(missing$n,
                                      " observations were missing lat/lon coordinates and will be excluded."))}
 
-  locations <- locations %>%
-    dplyr::filter(!is.na(.data$lat), !is.na(.data$lon)) %>%
-    dplyr::filter(!(duplicated(.data$lat) & duplicated(.data$lon))) %>%
-    dplyr::mutate(old_lat = .data$lat, old_lon = .data$lon) %>%
-    sf::st_as_sf(coords=c('lon', 'lat'), crs=4326) %>%
-    dplyr::mutate(elevation = get_elevation(.data$.),
-           highway.truck.traffic = get_truck_traffic(.data$.,lines.shapefile=highway.lines.sf,buffer.radius=400),
-           interstate.truck.traffic = get_truck_traffic(.data$.,lines.shapefile=interstate.lines.sf, buffer.radius=400),
-           bus.route.length = get_line_length(.data$., lines.shapefile=bus.route.lines.sf, buffer.radius=100),
-           truck400 = .data$interstate.truck.traffic + .data$highway.truck.traffic,
-           elevatnew = .data$elevation / 1000,
-           br_km = .data$bus.route.length / 1000,
-           br_km = ifelse(.data$br_km == 0, 0.01, .data$br_km),
-           logbr = log10(.data$br_km),
-           truck400s = .data$truck400 / 1000,
-           truck400s = ifelse(.data$truck400s == 0, 0.01, .data$truck400s),
-           logtruck = log10(.data$truck400s),
-           log_ecat = .34408 - (.85107 * .data$elevatnew) + (.04448 * .data$logbr) + (.03968 * .data$logtruck),
-           ecat = 10^.data$log_ecat)
+  locations <- locations[!is.na(locations$lat) & !is.na(locations$lon) ,]
+  locations <- locations[!(duplicated(locations$lat) & duplicated(locations$lon)) ,]
+  locations$old_lat <- locations$lat
+  locations$old_lon <- locations$lon
+  locations <- sf::st_as_sf(locations, coords=c('old_lon', 'old_lat'), crs=4326)
 
-  out <- locations %>%
-    sf::st_drop_geometry() %>%
-    dplyr::select(.data$id, lat = .data$old_lat, lon = .data$old_lon,
-                  .data$elevation, .data$highway.truck.traffic,
-                  .data$interstate.truck.traffic, .data$bus.route.length, .data$ecat)
+  locations$elevation <- get_elevation(locations)
+  locations$highway.truck.traffic <- get_truck_traffic(locations, lines.shapefile=highway.lines.sf, buffer.radius=400)
+  locations$interstate.truck.traffic <- get_truck_traffic(locations, lines.shapefile=interstate.lines.sf, buffer.radius=400)
+  locations$bus.route.length <- get_line_length(locations, lines.shapefile=bus.route.lines.sf, buffer.radius=100)
+  locations$truck400 <- locations$interstate.truck.traffic + locations$highway.truck.traffic
+  locations$elevatnew <- locations$elevation / 1000
+  locations$br_km <- locations$bus.route.length / 1000
+  locations$br_km <- ifelse(locations$br_km == 0, 0.01, locations$br_km)
+  locations$logbr <- log10(locations$br_km)
+  locations$truck400s <- locations$truck400 / 1000
+  locations$truck400s <- ifelse(locations$truck400s == 0, 0.01, locations$truck400s)
+  locations$logtruck <- log10(locations$truck400s)
+  locations$log_ecat <- .34408 - (.85107 * locations$elevatnew) + (.04448 * locations$logbr) + (.03968 * locations$logtruck)
+  locations$ecat <- 10^locations$log_ecat
+
+  out <- sf::st_drop_geometry(locations)
+  out <- locations[c("id", "lat", "lon", "elevation", "highway.truck.traffic",
+                     "interstate.truck.traffic", "bus.route.length", "ecat")]
 
   out <- dplyr::left_join(orig, out, by = c('lat', 'lon'))
 
@@ -98,7 +89,7 @@ calculate_ecat <- function(locations, return.LU.vars=FALSE) {
 #' @return A numeric vector of temporal scaling factors.
 #'
 #' @details EPA data in this package is available from November 9, 2001
-#'     through November 28, 2018. Scaling factors that attempt to average over
+#'     through May 30, 2019. Scaling factors that attempt to average over
 #'     EC measured on dates outside this range will not be calculated. In addition,
 #'     it is important to be mindful of the frequency of EC measurements recorded by the EPA.
 #'     Note that EC was measured every 6 days through the end of 2010, and every 3 days starting in 2011.
@@ -144,16 +135,17 @@ calculate_scaling_factors <- function(dates) {
   # precalculated average ec through end of 2005
   denom <- 0.6715289
 
-  dates <- dates %>%
-    dplyr::mutate(monthly_mean = purrr::map2_dbl(.data$start_date, .data$end_date,
-                                                 ~{ecats <- dplyr::filter(ec_ts, date >= .x, date <= .y)$EC
-                                                 if (length(ecats) < 4) warning("Less than 4 measurements recorded between start and end dates. Returning NA. Consider increasing date range.",
-                                                                              call. = FALSE)
-                                                 ifelse(length(ecats) < 4, NA, mean(ecats, na.rm=TRUE))
-                                   }),
-           scaling_factor = ifelse(.data$start_date < min(ec_ts$date) | .data$end_date > max(ec_ts$date),
-                                   NA, .data$monthly_mean/denom)) %>%
-    dplyr::select(-.data$monthly_mean)
+  dates$monthly_mean <- purrr::map2_dbl(dates$start_date, dates$end_date,
+                                        ~{ecats <- dplyr::filter(ec_ts, date >= .x, date <= .y)$EC
+                                        # if (length(ecats) < 4) warning("Less than 4 measurements recorded between start and end dates. Returning NA. Consider increasing date range.",
+                                        #                                call. = FALSE)
+                                        ifelse(length(ecats) < 4, NA, mean(ecats, na.rm=TRUE))
+                                        })
+
+  dates$scaling_factor <- ifelse(dates$start_date < min(ec_ts$date) | dates$end_date > max(ec_ts$date),
+                                   NA, dates$monthly_mean/denom)
+
+  dates <- dates[!names(dates) == 'monthly_mean']
 
   return(dates$scaling_factor)
 }

@@ -1,21 +1,14 @@
-#' @importFrom dplyr %>%
-#' @importFrom rlang .data
-NULL
-
 get_elevation <- function(locations) {
-  locations <- locations %>%
-    sf::st_transform(sf::st_crs(elevation.raster))
-  elevation <- raster::extract(elevation.raster,
-                               locations)
+  locations <- sf::st_transform(locations, sf::st_crs(elevation.raster))
+  elevation <- raster::extract(elevation.raster, locations)
   warning("The `raster` package has been attached to the global environment, masking dplyr::select()")
   return(elevation)
 }
 
 get_truck_traffic <- function(locations, lines.shapefile, buffer.radius=400) {
-  locations <- locations %>%
-    sf::st_transform(sf::st_crs(lines.shapefile)) %>%
-    dplyr::group_by(.data$id, .data$old_lat, .data$old_lon) %>%
-    tidyr::nest()
+  locations <- sf::st_transform(locations, sf::st_crs(lines.shapefile))
+  locations <- dplyr::group_by(locations, locations$id, locations$lat, locations$lon)
+  locations <- tidyr::nest(locations)
   buffer <- purrr::map(locations$data, ~sf::st_buffer(.x, dist=buffer.radius/0.3048006096, nQuadSegs=1000))
   suppressWarnings(intersect <- purrr::map(buffer, ~sf::st_intersection(.x, lines.shapefile)))
   intersect <- purrr::map(intersect, ~sf::st_drop_geometry(.x))
@@ -24,10 +17,9 @@ get_truck_traffic <- function(locations, lines.shapefile, buffer.radius=400) {
 }
 
 get_line_length <- function(locations,lines.shapefile,buffer.radius=100) {
-  locations <- locations %>%
-    sf::st_transform(sf::st_crs(lines.shapefile)) %>%
-    dplyr::group_by(.data$id, .data$old_lat, .data$old_lon) %>%
-    tidyr::nest()
+  locations <- sf::st_transform(locations, sf::st_crs(lines.shapefile))
+  locations <- dplyr::group_by(locations, locations$id, locations$lat, locations$lon)
+  locations <- tidyr::nest(locations)
   buffer <- purrr::map(locations$data, ~sf::st_buffer(.x, dist=buffer.radius/0.3048006096, nQuadSegs=1000))
   suppressWarnings(crop.buffer <- purrr::map(buffer, ~sf::st_intersection(.x, lines.shapefile)))
   lengths <- list()
