@@ -3,4 +3,7 @@
 ^README\.Rmd$
 ^README\.md$
 ^data-raw$
+^docs$
 ^LICENSE\.md$
+^cran-comments\.md$
+^check_and_release_functions.R$
