@@ -58,7 +58,7 @@ d <- tibble::tribble(
   )
 ```
 
-We want to scale the ecat measurements to monthly exposures between these dates, but we need `start_date` and `end_date` columns that represent the monthy time periods we want to average over.
+We want to scale the ecat measurements to monthly exposures between these dates, but we need `start_date` and `end_date` columns that represent the monthly time periods we want to average over.
 
 ```{r}
 d <- d %>% 
