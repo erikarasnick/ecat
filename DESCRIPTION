@@ -12,7 +12,7 @@ Maintainer: Erika Rasnick <erika.rasnick@cchmc.org>
 Description: Easily and reproducibly assess exposure to elemental carbon attributable to traffic (ECAT)
     at specific locations in and around Cincinnati, Ohio. The package calculates predictions of ECAT 
     exposure from a land use regression model developed by Dr. Patrick Ryan based on ambient air sampling 
-    in Cincinnati, OH between 2001 and 2005. Additionally scale estimates to account for temporal variation
+    in Cincinnati, OH between 2001 and 2005. Additionally, scale estimates to account for temporal variation
     in ECAT in the region.
 Encoding: UTF-8
 LazyData: true
@@ -26,7 +26,8 @@ Imports:
     lubridate (>= 1.7.4),
     tibble (>= 2.1.3),
     tidyr (>= 1.0.0),
-    sp (>= 1.3.1)
+    sp (>= 1.3.1),
+    rgdal (>= 1.4-8)
 RoxygenNote: 6.1.1
 Depends: R (>= 2.10)
 Suggests: 
