@@ -1,5 +1,9 @@
 ## Test environments
 * local OS X install, R 3.6.2
+* local Windows install, R 3.6.2
+* Fedora Linux, R-devel, clang, gfortran
+* Debian Linux, R-release, GCC
+* Windows Server 2008 R2 SP1, R-release, 32/64 bit
 * win-builder (devel and release)
 
 ## R CMD check results

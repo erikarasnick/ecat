@@ -37,7 +37,7 @@ my_dates <- data.frame(start_date = c("2010-01-08", "2012-06-08", "2010-01-09",
                        end_date = c("2010-02-08", "2012-07-08", "2010-02-09",
                                     "2015-05-09", "2010-02-10"))
 
-\dontrun{
+if (FALSE) {
 class(my_dates$start_date)  # character vector
 scaling1m <- calculate_scaling_factors(my_dates)
 }

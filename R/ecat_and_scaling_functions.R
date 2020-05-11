@@ -106,7 +106,7 @@ calculate_ecat <- function(locations, return.LU.vars=FALSE) {
 #'                        end_date = c("2010-02-08", "2012-07-08", "2010-02-09",
 #'                                     "2015-05-09", "2010-02-10"))
 #'
-#' \dontrun{
+#' if (FALSE) {
 #' class(my_dates$start_date)  # character vector
 #' scaling1m <- calculate_scaling_factors(my_dates)
 #' }
@@ -171,13 +171,15 @@ calculate_scaling_factors <- function(dates) {
 #' and Wheezing in Infants." Environmental Health Perspectives 115(2): 278-284.  \url{https://doi.org/10.1289/ehp.9480}
 #'
 #' @examples
-#' my_data <- data.frame(id = rep(1,3),
-#'     lat = c(39.19674, 39.19674,	39.19674),
-#'     lon = c(-84.58260, -84.58260, -84.58260),
-#'     start_date = as.Date(c("2010-01-08", "2012-06-08", "2015-04-09")),
-#'     end_date = as.Date(c("2010-02-08", "2012-07-08", "2015-05-09")))
+#' if (FALSE) {
+#' my_data <- data.frame(id = rep(1,2),
+#'     lat = c(39.19674, 39.19674),
+#'     lon = c(-84.58260, -84.58260),
+#'     start_date = as.Date(c("2010-01-08", "2012-06-08")),
+#'     end_date = as.Date(c("2010-02-08", "2012-07-08")))
 #'
 #' ecat_scaled <- add_scaled_ecat(my_data)
+#' }
 #' @export
 
 add_scaled_ecat <- function(locations) {
