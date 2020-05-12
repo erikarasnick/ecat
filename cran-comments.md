@@ -17,7 +17,7 @@ There was 1 NOTE:
       R  22.0Mb
 
   The data contained in sysdata.rda is required to estimate model predictors, 
-  which is essential to the main funtion of the package.
+  which is essential to the main function of the package.
   
 * This is my first submission.
 

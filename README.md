@@ -1,5 +1,9 @@
 # ecat
 
+<!-- badges: start -->
+[![R build status](https://github.com/erikarasnick/ecat/workflows/R-CMD-check/badge.svg)](https://github.com/erikarasnick/ecat/actions)
+<!-- badges: end -->
+
 The goal of the ecat package is to easily and reproducibly assess exposure to elemental carbon attributable to traffic (ECAT) at specific locations in and around Cincinnati, Ohio. The package calculates predictions of ECAT exposure from a land use regression model developed by Dr. Patrick Ryan based on ambient air sampling in Cincinnati, OH between 2001 and 2005. The model predictors include elevation, truck traffic within 400 meters, and length of bus routes within 100 meters.
 
 Additionally, these ECAT exposures can be adjusted to account for the temporal variation associated with changing ECAT levels in the area over time. Scaling factors are constructed using measurements of elemental carbon (EC) recorded by the EPA in the Cincinnati area. These scaling factors are the average EC measured over a time period of interest (e.g., gestation, the month leading up to date of  hospitalization, etc) divided by the average EC recorded over the ECAT ambient air sampling period (2001 to 2005). Scaling factors are then applied to ECAT estimates from the land use model.
